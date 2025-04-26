@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mvc-app-deployment
+  labels:
+    app: mvc-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mvc-app
+  template:
+    metadata:
+      labels:
+        app: mvc-app
+    spec:
+      containers:
+      - name: mvc-app
+        image: medch123/mvc-app:1.0
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mvc-app-service
+spec:
+  type: NodePort
+  selector:
+    app: mvc-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+    nodePort: 30080
+
