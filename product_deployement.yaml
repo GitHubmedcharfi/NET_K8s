@@ -15,11 +15,25 @@ spec:
         app: mvc-app
     spec:
       containers:
-      - name: mvc-app
-        image: medch123/mvc-app:1.0
-        ports:
-        - containerPort: 80
-        imagePullPolicy: Always
+        - name: mvc-app
+          image: medch123/mvc-app:1.0
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Always
+          env:
+            - name: ConnectionStrings__ProductsContext
+              valueFrom:
+                # Use this if using ConfigMap:
+                # configMapKeyRef:
+                #   name: mssql-connection-configmap
+                #   key: db-connection-string
+
+                # Use this if using Secret:
+                secretKeyRef:
+                  name: mssql-secret
+                  key: db-connection-string-secret
+
+
 ---
 apiVersion: v1
 kind: Service
@@ -30,8 +44,7 @@ spec:
   selector:
     app: mvc-app
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-    nodePort: 30080
-
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
